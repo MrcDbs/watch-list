@@ -4,7 +4,8 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import { Typography, Button, Box, ButtonGroup } from '@mui/material';
 import Chart from "./LineChart";
-import { getAll } from './FetchEndPoint';
+import { getAll, savePost, deleteById } from './FetchEndPoint';
+import FormDialog from "./FormDialog";
 
 
 const Dashboard = (props) => {
@@ -32,20 +33,12 @@ const Dashboard = (props) => {
         let tot = 0;
         res.forEach((r => tot = tot + r.quantita));
         setTotal(tot);
-
-        //return res;
     }
 
     useEffect(() => {
-        //let arr = [];
-
         fetchData();
-        console.log('arr dopo fetch ', rows);
-
-
-
-
-        console.log('ENTRO DENTRO USE EFFECT DASHBOARD ', JSON.stringify(rows));
+        //console.log('arr dopo fetch ', rows);
+        //console.log('ENTRO DENTRO USE EFFECT DASHBOARD ', JSON.stringify(rows));
 
     }, []);
 
@@ -83,15 +76,44 @@ const Dashboard = (props) => {
     //     { id: 6, source: 'UPH', lastUpdate: new Date(), ammount: 19431 },
     // ];
 
-    const [open, setOpen] = useState(false);
+    const [openChart, setOpenChart] = useState(false);
+    const [openForm, setOpenForm] = useState(false);
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setOpenChart(true);
     };
 
-    const handleClose = (value) => {
-        setOpen(false);
+    const handleCloseChart = (value) => {
+        setOpenChart(false);
     };
+
+    const handleClickOpenForm = () => {
+        setOpenForm(true);
+    };
+
+    const handleCloseForm = (value) => {
+        setOpenForm(false);
+    };
+
+    const saveProgress = (args) => {
+        args.id = rows.length + 1;
+        args.total = total + Number(args.quantita);
+        args.data_inserimento = new Date().toISOString().slice(0, 10);
+        savePost(args);
+        console.log("SAVING PROGRESS TO DB ", args);
+        fetchData();
+    }
+
+    const handleRowClick = (params) => {
+        let ans = window.confirm("Eliminare questo record?");
+        console.log('Clicked row data:', params.row.id + " " + ans);
+        if (ans) {
+            deleteById(params.row.id);
+            fetchData();
+        }
+
+    }
+
 
     return (
         <>
@@ -103,23 +125,25 @@ const Dashboard = (props) => {
                     </Typography>
 
                 </Box>
-                <Box sx={{ height: 425, width: '100%' }}>
+                <Box sx={{ height: [rows.length > 4 ? 465 : 350], width: '100%' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        pageSize={6}
+                        pageSize={7}
+                        onRowClick={handleRowClick}
                     //pageSizeOptions={[6]}
                     />
                 </Box>
                 <ButtonGroup >
-                    <Button variant="contained">ADD</Button>
-                    <Button variant="contained">DELETE</Button>
-                    <Button variant="outlined">LOG OUT</Button>
+                    <Button variant="contained" onClick={handleClickOpenForm}>ADD</Button>
+                    <Button variant="outlined" onClick={props.setLoggedOut}>LOG OUT</Button>
                 </ButtonGroup>
             </div>
-            <Chart open={open} handleClose={handleClose} />
+            <Chart open={openChart} handleClose={handleCloseChart} />
+            <FormDialog open={openForm} handleClose={handleCloseForm} saveProgress={saveProgress} />
         </>
-    )
+    );
 }
+
 
 export default Dashboard;

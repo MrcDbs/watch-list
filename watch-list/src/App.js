@@ -14,14 +14,18 @@ function App() {
   const loggedIn = () => {
     setLogged(true);
   }
+
+  const logOut = () => {
+    setLogged(false);
+  }
   return (
     <div className="App">
-      {logged ? <Dashboard /> :
+      {logged ? <Dashboard setLoggedOut={logOut} /> :
         <>
-          <Typography variant="h2" component="h2">
-            Tracking App
-          </Typography>
           <header className="App-header">
+            <Typography variant="h3" component="h3" style={{ colo: 'cornflowerblue' }}>
+              TRACKING APP
+            </Typography>
             <Login
               setUtente={setUtente}
               loggedIn={loggedIn}
