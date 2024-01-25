@@ -46,7 +46,7 @@ const Login = (props) => {
             })
             .catch(error => {
                 console.log('ERRORE ', error);
-                setResponse(error.response.data);
+                setResponse(error.response);
                 setResponseStatus(error.response.status);
                 console.log('QUESTO `E LO STATUS CODE RITORNATO', error.response.status);
             })
