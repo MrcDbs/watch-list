@@ -31,7 +31,9 @@
   color: #61dafb;
 }
 
-.title {}
+.custom-cell-class {
+  color: rgb(21, 252, 0)2, 46;
+}
 
 @keyframes App-logo-spin {
   from {

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, FormControl, TextField, InputLabel, OutlinedInput, InputAdornment, DialogContent, Button, Alert } from '@mui/material';
+import { Dialog, DialogTitle, FormControl, TextField, InputLabel, OutlinedInput, InputAdornment, DialogContent, Button, Alert, Box, Tab } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Tabs from "./tabs";
 
 
 const FormDialog = (props) => {
     const [progress, setProgress] = useState({});
     const [alertOpen, setAlertOpen] = useState(false);
+
 
     useEffect(() => { }, [alertOpen]);
 
@@ -14,27 +16,35 @@ const FormDialog = (props) => {
     const closeAlert = () => {
         setAlertOpen(false);
     }
-    const handleChange = (event) => {
-        console.log(event.target.value);
-        setProgress((progress) => ({ ...progress, [event.target.id]: event.target.value }));
-    }
+    // const handleChange = (event) => {
+    //     console.log(event.target.value);
+    //     setProgress((progress) => ({ ...progress, [event.target.id]: event.target.value }));
+    // }
 
-    const handleSave = () => {
-        if (progress.descrizione !== undefined && progress.quantita !== undefined) {
-            props.saveProgress(progress);
-            props.handleClose();
-        }
-        setAlertOpen(true);
+    // const handleSave = () => {
+    //     if (progress.descrizione !== undefined && progress.quantita !== undefined) {
+    //         props.saveProgress(progress);
+    //         props.handleClose();
+    //     }
+    //     setAlertOpen(true);
 
-    }
+    // }
     return (
         <>
-            <Dialog onClose={props.handleClose} open={props.open}>
+
+            <Dialog onClose={() => {
+                closeAlert();
+                props.handleClose()
+            }} open={props.open}>
                 <DialogTitle>Save Progress</DialogTitle>
                 <DialogContent>
-                    <IconButton
+                    <Tabs handleClose={props.handleClose} saveProgress={props.saveProgress} />
+                    {/* <IconButton
                         aria-label="close"
-                        onClick={props.handleClose}
+                        onClick={() => {
+                            closeAlert();
+                            props.handleClose()
+                        }}
                         sx={{
                             position: 'absolute',
                             right: 8,
@@ -62,7 +72,7 @@ const FormDialog = (props) => {
                     <FormControl sx={{ m: 1 }}>
                         <Button variant="contained" type="submit" sx={{ marginTop: '15px' }} onClick={(event) => handleSave(event)}>Save</Button>
                     </FormControl>
-                    {alertOpen ? <Alert severity="warning" onClose={closeAlert}>Empty fields</Alert> : <></>}
+                    {alertOpen ? <Alert severity="warning" onClose={closeAlert}>Empty fields</Alert> : <></>} */}
                 </DialogContent>
             </Dialog>
         </>
